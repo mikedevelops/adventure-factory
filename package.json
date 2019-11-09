@@ -4,16 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "parcel src/index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-jest": "^24.9.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
     "parcel-bundler": "^1.12.4",
     "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "immutable": "^4.0.0-rc.12",
+    "redux": "^4.0.4",
+    "redux-batched-actions": "^0.4.1"
+  },
+  "transform": {
+    "^.+\\.js?$": "babel-jest"
   }
 }

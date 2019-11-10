@@ -10,6 +10,7 @@ import {
 import { List } from "immutable";
 import { createText } from "../../src/entities/text";
 import { createScene } from "../../src/entities/scene";
+import { createChoice } from "../../src/entities/choice";
 
 describe("Passages", () => {
   describe("sortByPassageOrder()", () => {
@@ -106,6 +107,7 @@ describe("Passages", () => {
         "scene",
         "scene",
         List([passage1, passage2]),
+        createChoice(List()),
         true,
         true
       );

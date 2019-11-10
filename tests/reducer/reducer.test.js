@@ -4,6 +4,7 @@ import { List, Map } from "immutable";
 import reducer from "../../src/state/reducer";
 import { createPassage } from "../../src/entities/passage";
 import { createText } from "../../src/entities/text";
+import { createChoice } from "../../src/entities/choice";
 
 describe("Reducer", () => {
   describe(ENGINE_START, () => {
@@ -12,6 +13,7 @@ describe("Reducer", () => {
         "first",
         "first",
         List([createPassage("passage_one", 0, createText("hi"))]),
+        createChoice(List()),
         true
       );
       const state = Map({
@@ -29,6 +31,7 @@ describe("Reducer", () => {
               List([
                 createPassage("passage_one", 0, createText("hi"), false, true)
               ]),
+              createChoice(List()),
               true,
               true
             )

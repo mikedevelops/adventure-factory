@@ -15,6 +15,7 @@ import { activatePassage, deactivatePassages, getNextPassage } from "./passage";
  * @param {string} id
  * @param {string} name
  * @param {List<Passage>} passages
+ * @param {PassageChoice} choice
  * @param {boolean} isFirstScene
  * @param {boolean} isActive
  * @param {boolean} isComplete
@@ -23,7 +24,8 @@ import { activatePassage, deactivatePassages, getNextPassage } from "./passage";
 export const createScene = (
   id,
   name,
-  passages = List(),
+  passages,
+  choice,
   isFirstScene = false,
   isActive = false,
   isComplete = false
@@ -33,7 +35,8 @@ export const createScene = (
   isFirstScene,
   isActive,
   isComplete,
-  passages
+  passages,
+  choice
 });
 
 /**

@@ -10,14 +10,40 @@ import {
 import { List, Map } from "immutable";
 import { createPassage } from "../../src/entities/passage";
 import { createText } from "../../src/entities/text";
+import { createChoice } from "../../src/entities/choice";
 
 describe("Scenes", () => {
   describe("activateScene()", () => {
     test("Should activate the scene and deactivate all others", () => {
-      const scene1 = createScene("scene_one", "one", List(), true);
-      const scene2 = createScene("scene_two", "two", List(), false, true);
-      const scene3 = createScene("scene_three", "three", List());
-      const scene4 = createScene("scene_four", "four", List(), false, true);
+      const scene1 = createScene(
+        "scene_one",
+        "one",
+        List(),
+        createChoice(List()),
+        true
+      );
+      const scene2 = createScene(
+        "scene_two",
+        "two",
+        List(),
+        createChoice(List()),
+        false,
+        true
+      );
+      const scene3 = createScene(
+        "scene_three",
+        "three",
+        List(),
+        createChoice(List())
+      );
+      const scene4 = createScene(
+        "scene_four",
+        "four",
+        List(),
+        createChoice(List()),
+        false,
+        true
+      );
       const scenes = List([scene1, scene2, scene3, scene4]);
 
       const nextScenes = activateScene(scenes, scene3);
@@ -25,9 +51,16 @@ describe("Scenes", () => {
       expect(nextScenes).toEqual(
         List([
           scene1,
-          createScene("scene_two", "two", List()),
-          createScene("scene_three", "three", List(), false, true),
-          createScene("scene_four", "four", List())
+          createScene("scene_two", "two", List(), createChoice(List())),
+          createScene(
+            "scene_three",
+            "three",
+            List(),
+            createChoice(List()),
+            false,
+            true
+          ),
+          createScene("scene_four", "four", List(), createChoice(List()))
         ])
       );
     });
@@ -35,8 +68,18 @@ describe("Scenes", () => {
 
   describe("updateScene()", () => {
     test("Should update the scene in the state", () => {
-      const scene1 = createScene("scene_one", "one", List());
-      const scene2 = createScene("scene_two", "two", List());
+      const scene1 = createScene(
+        "scene_one",
+        "one",
+        List(),
+        createChoice(List())
+      );
+      const scene2 = createScene(
+        "scene_two",
+        "two",
+        List(),
+        createChoice(List())
+      );
       const scene2Update = Object.assign({}, scene2, {
         isActive: true
       });
@@ -47,8 +90,18 @@ describe("Scenes", () => {
     });
 
     test("Should add a new scene if it does not exist", () => {
-      const scene1 = createScene("scene_one", "one", List());
-      const scene2 = createScene("scene_two", "two", List());
+      const scene1 = createScene(
+        "scene_one",
+        "one",
+        List(),
+        createChoice(List())
+      );
+      const scene2 = createScene(
+        "scene_two",
+        "two",
+        List(),
+        createChoice(List())
+      );
 
       const scenes = updateScene(List([scene1]), scene2);
 
@@ -58,12 +111,14 @@ describe("Scenes", () => {
 
   describe("updatePassages", () => {
     test("Should update the passages in a scene", () => {
-      const scene = createScene("scene", "scene", List([]));
+      const scene = createScene("scene", "scene", List(), createChoice(List()));
       const passage = createPassage("p", 0, createText(""));
 
       const newScene = updatePassages(scene, List([passage]));
 
-      expect(newScene).toEqual(createScene("scene", "scene", List([passage])));
+      expect(newScene).toEqual(
+        createScene("scene", "scene", List([passage]), createChoice(List()))
+      );
     });
   });
 
@@ -88,7 +143,8 @@ describe("Scenes", () => {
         List([
           createPassage("p1", 0, createText(""), true),
           createPassage("p2", 1, createText(""), true)
-        ])
+        ]),
+        createChoice(List())
       );
 
       expect(isSceneComplete(scene)).toBe(true);
@@ -97,20 +153,40 @@ describe("Scenes", () => {
 
   describe("setSceneComplete()", () => {
     test("Should set the scene complete and deactivate", () => {
-      const scene = createScene("s", "s", List(), true, true, false);
+      const scene = createScene(
+        "s",
+        "s",
+        List(),
+        createChoice(List()),
+        true,
+        true,
+        false
+      );
 
       const completeScene = setSceneComplete(scene);
 
       expect(completeScene).toEqual(
-        createScene("s", "s", List(), true, false, true)
+        createScene("s", "s", List(), createChoice(List()), true, false, true)
       );
     });
   });
 
   describe("getNextScene()", () => {
     test("Should get the active scene", () => {
-      const activeScene = createScene("s1", "active", List(), false, true);
-      const inactiveScene = createScene("s2", "inactive", List());
+      const activeScene = createScene(
+        "s1",
+        "active",
+        List(),
+        createChoice(List()),
+        false,
+        true
+      );
+      const inactiveScene = createScene(
+        "s2",
+        "inactive",
+        List(),
+        createChoice(List())
+      );
 
       const next = getNextScene(List([activeScene, inactiveScene]));
 
@@ -118,8 +194,18 @@ describe("Scenes", () => {
     });
 
     test("Should get the next incomplete scene", () => {
-      const anotherInactiveScene = createScene("s1", "active", List());
-      const inactiveScene = createScene("s2", "inactive", List());
+      const anotherInactiveScene = createScene(
+        "s1",
+        "active",
+        List(),
+        createChoice(List())
+      );
+      const inactiveScene = createScene(
+        "s2",
+        "inactive",
+        List(),
+        createChoice(List())
+      );
 
       const next = getNextScene(List([anotherInactiveScene, inactiveScene]));
 
@@ -127,8 +213,19 @@ describe("Scenes", () => {
     });
 
     test("Should prioritise the first scene", () => {
-      const anotherInactiveScene = createScene("s1", "active", List());
-      const inactiveScene = createScene("s2", "inactive", List(), true);
+      const anotherInactiveScene = createScene(
+        "s1",
+        "active",
+        List(),
+        createChoice(List())
+      );
+      const inactiveScene = createScene(
+        "s2",
+        "inactive",
+        List(),
+        createChoice(List()),
+        true
+      );
 
       const next = getNextScene(List([anotherInactiveScene, inactiveScene]));
 

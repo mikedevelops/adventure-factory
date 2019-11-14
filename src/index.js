@@ -6,26 +6,55 @@ import { createScene } from "./entities/scene";
 import { Map, List } from "immutable";
 import { createPassage } from "./entities/passage";
 import { createText } from "./entities/text";
+import { createChoice } from "./entities/choice";
+import { createOption } from "./entities/option";
 
 const state = Map({
   scenes: List([
     createScene(
       "home",
       "start",
-      List([
-        createPassage("home_1", 0, createText("Greetings")),
-        createPassage("home_2", 1, createText("Welcome to the party, pal")),
-        createPassage("home_3", 2, createText("Let's go!"))
-      ]),
+      List([createPassage("home_1", 0, createText("home scene"))]),
+      createChoice(
+        List([
+          createOption(createText("Go to scene A"), "scene_a"),
+          createOption(createText("Go to scene B"), "scene_b")
+        ])
+      ),
       true
+    ),
+    createScene(
+      "scene_a",
+      "A",
+      List([createPassage("p", 0, createText("Welcome to scene A"))]),
+      createChoice(
+        List([
+          createOption(createText("Go to home"), "home"),
+          createOption(createText("Go to B"), "scene_b")
+        ])
+      )
+    ),
+    createScene(
+      "scene_b",
+      "B",
+      List([createPassage("p", 0, createText("Welcome to scene B"))]),
+      createChoice(
+        List([
+          createOption(createText("Go to home"), "home"),
+          createOption(createText("Go to A"), "scene_a")
+        ])
+      )
     )
   ])
 });
 const store = createStore(reducer, state);
-const renderer = new Renderer();
+const stage = document.getElementById("stage");
+const renderer = new Renderer(stage.getContext("2d"));
 const engine = new Engine(renderer, store);
 
-engine.init();
-engine.start();
+// engine.init();
+// engine.start();
 
-window.engine = engine;
+// window.engine = engine;
+
+export default engine;

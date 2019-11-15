@@ -2,6 +2,7 @@ import {
   activateScene,
   createScene,
   getNextScene,
+  goToScene,
   isSceneComplete,
   setSceneComplete,
   updatePassages,
@@ -123,20 +124,21 @@ describe("Scenes", () => {
   });
 
   describe("isSceneComplete()", () => {
-    test("Should return true if all passages are complete", () => {
+    test("Should return false if passages are incomplete", () => {
       const scene = createScene(
         "scene",
         "scene",
         List([
           createPassage("p1", 0, createText(""), true),
           createPassage("p2", 1, createText(""), false)
-        ])
+        ]),
+        createChoice(List())
       );
 
       expect(isSceneComplete(scene)).toBe(false);
     });
 
-    test("Should return false if all passages are not complete", () => {
+    test("Should return false if choice is incomplete", () => {
       const scene = createScene(
         "scene",
         "scene",
@@ -145,6 +147,20 @@ describe("Scenes", () => {
           createPassage("p2", 1, createText(""), true)
         ]),
         createChoice(List())
+      );
+
+      expect(isSceneComplete(scene)).toBe(false);
+    });
+
+    test("Should return true if all passages and choice are complete", () => {
+      const scene = createScene(
+        "scene",
+        "scene",
+        List([
+          createPassage("p1", 0, createText(""), true),
+          createPassage("p2", 1, createText(""), true)
+        ]),
+        createChoice(List(), true)
       );
 
       expect(isSceneComplete(scene)).toBe(true);
@@ -230,6 +246,37 @@ describe("Scenes", () => {
       const next = getNextScene(List([anotherInactiveScene, inactiveScene]));
 
       expect(next).toBe(inactiveScene);
+    });
+  });
+
+  describe("goToScene()", () => {
+    test("Should go to the new scene and complete the active scene", () => {
+      const scene1 = createScene(
+        "s1",
+        "home",
+        List(),
+        createChoice(List()),
+        true,
+        true
+      );
+      const scene2 = createScene("s2", "next", List(), createChoice(List()));
+
+      const newScenes = goToScene(List([scene1, scene2]), "s2");
+
+      expect(newScenes).toEqual(
+        List([
+          createScene(
+            "s1",
+            "home",
+            List(),
+            createChoice(List(), true),
+            true,
+            false,
+            true
+          ),
+          createScene("s2", "next", List(), createChoice(List()), false, true)
+        ])
+      );
     });
   });
 });

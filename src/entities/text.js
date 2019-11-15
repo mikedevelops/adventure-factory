@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} PassageText
- * @param {string} content
+ * @property {string} content
  */
 
 /**

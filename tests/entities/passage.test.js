@@ -5,7 +5,8 @@ import {
   deactivatePassages,
   getActivePassage,
   getNextPassage,
-  sortByPassageOrder
+  sortByPassageOrder,
+  isPassagesComplete
 } from "../../src/entities/passage";
 import { List } from "immutable";
 import { createText } from "../../src/entities/text";
@@ -153,6 +154,27 @@ describe("Passages", () => {
       expect(passages).toEqual(
         List([createPassage("p1", 0, createText(""), true, false), passage2])
       );
+    });
+  });
+
+  describe("isPassagesComplete()", () => {
+    test("Should return true if all passages are complete", () => {
+      const passages = List([
+        createPassage("p1", 0, createText(""), true),
+        createPassage("p2", 1, createText(""), true),
+        createPassage("p3", 2, createText(""), true)
+      ]);
+
+      expect(isPassagesComplete(passages)).toBe(true);
+    });
+    test("Should return false if all passages are not complete", () => {
+      const passages = List([
+        createPassage("p1", 0, createText(""), true),
+        createPassage("p2", 1, createText(""), false),
+        createPassage("p3", 2, createText(""), true)
+      ]);
+
+      expect(isPassagesComplete(passages)).toBe(false);
     });
   });
 });

@@ -1,11 +1,18 @@
 import { List } from "immutable";
-import { activatePassage, deactivatePassages, getNextPassage } from "./passage";
+import {
+  activatePassage,
+  deactivatePassages,
+  getNextPassage,
+  setPassagesInComplete
+} from "./passage";
+import { setChoiceComplete } from "./choice";
 
 /**
  * @typedef {Object} Scene
  * @property {string} id
  * @property {string} name
  * @property {List<Passage>} passages
+ * @property {SceneChoice} choice
  * @property {boolean} isFirstScene
  * @property {boolean} isActive
  * @property {boolean} isComplete
@@ -15,7 +22,7 @@ import { activatePassage, deactivatePassages, getNextPassage } from "./passage";
  * @param {string} id
  * @param {string} name
  * @param {List<Passage>} passages
- * @param {PassageChoice} choice
+ * @param {SceneChoice} choice
  * @param {boolean} isFirstScene
  * @param {boolean} isActive
  * @param {boolean} isComplete
@@ -135,7 +142,13 @@ export const updateScene = (scenes, scene) => {
  * @return {boolean}
  */
 export const isSceneComplete = scene => {
-  return scene.passages.filter(p => !p.isComplete).size === 0;
+  const incompletePassages = scene.passages.filter(p => !p.isComplete);
+
+  if (incompletePassages.size > 0) {
+    return false;
+  }
+
+  return scene.choice.isComplete;
 };
 
 /**
@@ -144,4 +157,72 @@ export const isSceneComplete = scene => {
  */
 export const setSceneComplete = scene => {
   return Object.assign({}, scene, { isComplete: true, isActive: false });
+};
+
+/**
+ * @param {Scene} scene
+ * @return {Scene}
+ */
+export const setSceneIncomplete = scene => {
+  const inCompletePassages = setPassagesInComplete(scene.passages);
+  return Object.assign({}, scene, {
+    isComplete: false,
+    passages: inCompletePassages
+  });
+};
+
+/**
+ * @param {Scene} scene
+ * @param {SceneChoice} choice
+ * @return {Scene}
+ */
+export const updateChoice = (scene, choice) => {
+  return Object.assign({}, scene, { choice });
+};
+
+/**
+ * @param {Scene} scene
+ * @return {boolean}
+ */
+export const isChoiceActive = scene => {
+  return scene.choice.isActive;
+};
+
+/**
+ * @param {List<Scene>} scenes
+ * @return {SceneChoice|null}
+ */
+export const getActiveChoice = scenes => {
+  const activeScene = scenes.find(s => s.isActive);
+
+  if (activeScene === undefined) {
+    return null;
+  }
+
+  if (!activeScene.choice.isActive) {
+    return null;
+  }
+
+  return activeScene.choice;
+};
+
+/**
+ * @param {List<Scene>} scenes
+ * @param {string} newSceneId
+ * @return {List<Scene>}
+ */
+export const goToScene = (scenes, newSceneId) => {
+  const activeScene = getActiveScene(scenes);
+  const sceneWithCompletedChoice = setChoiceComplete(activeScene);
+  const completedScenes = updateScene(
+    scenes,
+    setSceneComplete(sceneWithCompletedChoice)
+  );
+  const newScene = completedScenes.find(s => s.id === newSceneId);
+
+  if (newScene === undefined) {
+    throw new Error(`Could not find scene "${newSceneId}"`);
+  }
+
+  return activateScene(completedScenes, setSceneIncomplete(newScene));
 };

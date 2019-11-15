@@ -30,3 +30,37 @@ export const nextPassage = scene => ({
 
 export const GAME_OVER = "GAME_OVER";
 export const gameOver = () => ({ type: GAME_OVER });
+
+export const PRESENT_CHOICE = "PRESENT_CHOICE";
+/**
+ * @param {Scene} scene
+ * @return {{type: string, scene: Scene}}
+ */
+export const presentChoice = scene => ({
+  type: PRESENT_CHOICE,
+  scene
+});
+
+export const SELECT_CHOICE_OPTION = "SELECT_CHOICE_OPTION";
+/**
+ * @param {SceneChoice} choice
+ * @return {{type: string, choice: SceneChoice}}
+ */
+export const selectChoiceOption = choice => ({
+  type: SELECT_CHOICE_OPTION,
+  choice
+});
+
+export const FOCUS_CHOICE_OPTION = "FOCUS_CHOICE_OPTION";
+/**
+ * @param {Scene} scene
+ * @param {SceneChoice} choice
+ * @param {number} optionIndex
+ * @return {{type: string, option: ChoiceOption, choice: SceneChoice}}
+ */
+export const focusChoiceOption = (scene, choice, optionIndex) => ({
+  type: FOCUS_CHOICE_OPTION,
+  scene,
+  choice,
+  optionIndex
+});

@@ -106,3 +106,25 @@ export const setPassageComplete = (passages, passage) => {
     return p;
   });
 };
+
+/**
+ * @param {List<Passage>} passages
+ * @return {List<Passage>}
+ */
+export const setPassagesInComplete = passages => {
+  return passages.map(p => Object.assign({}, p, { isComplete: false }));
+};
+
+/**
+ * @param {List<Passage>} passages
+ * @return {boolean}
+ */
+export const isPassagesComplete = passages => {
+  for (let i = 0; i < passages.size; i++) {
+    if (!passages.get(i).isComplete) {
+      return false;
+    }
+  }
+
+  return true;
+};

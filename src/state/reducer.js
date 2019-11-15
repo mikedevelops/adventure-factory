@@ -3,11 +3,16 @@ import {
   COMPLETE_PASSAGE,
   COMPLETE_SCENE,
   ENGINE_START,
-  NEXT_PASSAGE
+  FOCUS_CHOICE_OPTION,
+  NEXT_PASSAGE,
+  PRESENT_CHOICE,
+  SELECT_CHOICE_OPTION
 } from "./actions";
 import {
   activateScene,
+  goToScene,
   setSceneComplete,
+  updateChoice,
   updatePassages,
   updateScene
 } from "../entities/scene";
@@ -16,6 +21,11 @@ import {
   getNextPassage,
   setPassageComplete
 } from "../entities/passage";
+import {
+  activateChoice,
+  setOptionFocused,
+  getFocusedOption
+} from "../entities/choice";
 
 const initialState = Map({
   scenes: List()
@@ -51,6 +61,28 @@ export default (state = initialState, action) => {
         "scenes",
         updateScene(state.get("scenes"), setSceneComplete(action.scene))
       );
+
+    case PRESENT_CHOICE:
+      return state.set(
+        "scenes",
+        updateScene(state.get("scenes"), activateChoice(action.scene))
+      );
+
+    case SELECT_CHOICE_OPTION: {
+      const option = getFocusedOption(action.choice);
+      return state.set(
+        "scenes",
+        goToScene(state.get("scenes"), option.location)
+      );
+    }
+
+    case FOCUS_CHOICE_OPTION: {
+      const choice = setOptionFocused(action.choice, action.optionIndex);
+      return state.set(
+        "scenes",
+        updateScene(state.get("scenes"), updateChoice(action.scene, choice))
+      );
+    }
 
     default:
       return state;

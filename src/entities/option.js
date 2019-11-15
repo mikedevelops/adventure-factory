@@ -1,15 +1,18 @@
 /**
- * @typedef {Object} PassageOption
- * @param {Text} text
- * @param {string} location
+ * @typedef {Object} ChoiceOption
+ * @property {Text} text
+ * @property {string} location
+ * @property {boolean} isFocused
  */
 
 /**
  * @param {PassageText} text
  * @param {string} location
- * @return {PassageOption}
+ * @param {boolean} isFocused
+ * @return {ChoiceOption}
  */
-export const createOption = (text, location) => ({
+export const createOption = (text, location, isFocused = false) => ({
   text,
-  location
+  location,
+  isFocused
 });

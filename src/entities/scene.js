@@ -12,7 +12,7 @@ import { setChoiceComplete } from "./choice";
  * @property {string} id
  * @property {string} name
  * @property {List<Passage>} passages
- * @property {SceneChoice} choice
+ * @property {SceneChoice|null} choice
  * @property {boolean} isFirstScene
  * @property {boolean} isActive
  * @property {boolean} isComplete
@@ -22,7 +22,7 @@ import { setChoiceComplete } from "./choice";
  * @param {string} id
  * @param {string} name
  * @param {List<Passage>} passages
- * @param {SceneChoice} choice
+ * @param {SceneChoice|null} choice
  * @param {boolean} isFirstScene
  * @param {boolean} isActive
  * @param {boolean} isComplete
@@ -32,7 +32,7 @@ export const createScene = (
   id,
   name,
   passages,
-  choice,
+  choice = null,
   isFirstScene = false,
   isActive = false,
   isComplete = false

@@ -4,12 +4,14 @@ import {
   COMPLETE_SCENE,
   ENGINE_START,
   FOCUS_CHOICE_OPTION,
+  LOAD_SCENES,
   NEXT_PASSAGE,
   PRESENT_CHOICE,
   SELECT_CHOICE_OPTION
 } from "./actions";
 import {
   activateScene,
+  getNextScene,
   goToScene,
   setSceneComplete,
   updateChoice,
@@ -82,6 +84,12 @@ export default (state = initialState, action) => {
         "scenes",
         updateScene(state.get("scenes"), updateChoice(action.scene, choice))
       );
+    }
+
+    case LOAD_SCENES: {
+      const { scenes } = action;
+      const loadedScenes = activateScene(scenes, getNextScene(scenes));
+      return state.set("scenes", loadedScenes);
     }
 
     default:

@@ -2,9 +2,8 @@ import {
   completePassage,
   completeScene,
   focusChoiceOption,
-  gameOver,
+  loadScenes,
   nextPassage,
-  nextScene,
   presentChoice,
   selectChoiceOption,
   startEngine
@@ -16,13 +15,11 @@ import {
   isChoiceActive,
   isSceneComplete
 } from "../entities/scene";
-import {
-  getActivePassage,
-  getNextPassage,
-  isPassagesComplete
-} from "../entities/passage";
-import { batchActions } from "redux-batched-actions";
-import { getFocusedOption, getOptionFromChoice } from "../entities/choice";
+import { getActivePassage, isPassagesComplete } from "../entities/passage";
+import { getFocusedOption } from "../entities/choice";
+import { createStore } from "redux";
+import reducer from "../state/reducer";
+import { List, Map } from "immutable";
 
 const KEY_ENTER = "Enter";
 const KEY_DOWN = "ArrowDown";
@@ -42,6 +39,11 @@ export default class Engine {
      * @type {Store}
      */
     this.store = store;
+    /**
+     *
+     * @type {List<Scene>|null}
+     */
+    this.checkpoint = null;
   }
 
   init() {
@@ -49,9 +51,20 @@ export default class Engine {
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
-  start() {
-    const scenes = this.store.getState().get("scenes");
-    this.store.dispatch(startEngine(getNextScene(scenes)));
+  /**
+   * @param {List<Scene>} scenes
+   */
+  load(scenes) {
+    this.checkpoint = scenes.slice();
+    this.store.dispatch(loadScenes(scenes));
+  }
+
+  reload() {
+    if (this.checkpoint === null) {
+      throw new Error("No checkpoint to reload");
+    }
+
+    this.store.dispatch(loadScenes(this.checkpoint));
   }
 
   update() {
@@ -76,12 +89,7 @@ export default class Engine {
 
   next() {
     const scenes = this.store.getState().get("scenes");
-    const activeScene = getActiveScene(scenes);
-
-    if (activeScene === null) {
-      throw new Error("No active scene");
-    }
-
+    const activeScene = getNextScene(scenes);
     const activePassage = getActivePassage(scenes);
 
     if (isPassagesComplete(activeScene.passages)) {

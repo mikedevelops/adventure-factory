@@ -64,3 +64,9 @@ export const focusChoiceOption = (scene, choice, optionIndex) => ({
   choice,
   optionIndex
 });
+
+export const LOAD_SCENES = "LOAD_SCENES";
+export const loadScenes = scenes => ({
+  type: LOAD_SCENES,
+  scenes
+});

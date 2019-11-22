@@ -8,41 +8,63 @@ export default class Renderer {
     this.ctx = context;
     this.ctx.font = `${FONT_SIZE}px Arial`;
     this.drawing = false;
+
+    /**
+     * @type {Map<string, CanvasRenderingContext2D>}
+     */
+    this.layers = new Map();
   }
 
-  /**
-   * @param {Passage} passage
+  createLayer(name) {
+    const canvas = new OffscreenCanvas(
+      this.ctx.canvas.width,
+      this.ctx.canvas.height
+    );
+    const ctx = canvas.getContext("2d");
 
-   */
-  printPassage(passage) {
+    this.layers.set(name, ctx);
+  }
+
+  getLayer(name) {
+    return this.layers.get(name);
+  }
+
+  clear() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.ctx.fillStyle = "black";
-    this.drawText(passage.text.content);
-  }
-
-  /**
-   * @param {SceneChoice} choice
-   */
-  printChoice(choice) {
-    choice.options.forEach((option, index) => {
-      this.ctx.fillStyle = option.isFocused ? "red" : "black";
-      this.drawOption(option.text.content, index);
-    });
   }
 
   /**
    * @param {string} text
+   * @param {CanvasRenderingContext2D} ctx
    */
-  drawText(text) {
-    this.ctx.fillText(text, 0, this.getUnit(1));
+  drawText(text, ctx) {
+    const { width } = ctx.measureText(text);
+
+    ctx.save();
+    ctx.fillStyle = "red";
+    ctx.fillRect(0, this.getUnit(1) / 4, width, FONT_SIZE);
+    ctx.restore();
+    ctx.fillText(text, 0, this.getUnit(1));
+
+    this.ctx.drawImage(ctx.canvas, 0, 0);
   }
 
-  drawOption(label, optionIndex) {
-    this.ctx.fillText(
-      label,
-      0,
-      optionIndex * this.getUnit(1) + this.getUnit(3)
-    );
+  getWaitingForInputBounds() {
+    const size = this.getUnit(1);
+    return {
+      x: this.ctx.canvas.width - size * 2,
+      y: this.ctx.canvas.height - size * 2,
+      width: size,
+      height: size
+    };
+  }
+
+  drawWaitingForInput() {
+    this.ctx.fillRect(...Object.values(this.getWaitingForInputBounds()));
+  }
+
+  clearWaitingForInput() {
+    this.ctx.clearRect(...Object.values(this.getWaitingForInputBounds()));
   }
 
   /**

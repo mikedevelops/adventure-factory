@@ -2,6 +2,7 @@ import {
   completePassage,
   completeScene,
   focusChoiceOption,
+  input,
   loadScenes,
   nextPassage,
   presentChoice,
@@ -13,10 +14,15 @@ import {
   getActiveScene,
   getNextScene,
   isChoiceActive,
+  isPassageNext,
   isSceneComplete
 } from "../entities/scene";
-import { getActivePassage, isPassagesComplete } from "../entities/passage";
-import { getFocusedOption } from "../entities/choice";
+import {
+  getActivePassage,
+  getNextPassage,
+  isPassagesComplete
+} from "../entities/passage";
+import { activateChoice, getFocusedOption } from "../entities/choice";
 import { createStore } from "redux";
 import reducer from "../state/reducer";
 import { List, Map } from "immutable";
@@ -25,30 +31,48 @@ const KEY_ENTER = "Enter";
 const KEY_DOWN = "ArrowDown";
 const KEY_UP = "ArrowUp";
 
+const BASE_UNIT = 16;
+
+// TODO: state machine approach might be nicer here........
+
 export default class Engine {
   /**
-   * @param {Renderer} renderer
+   * @param {UiEngine} ui
+   * @param {TextEngine} textEngine
    * @param {Store} store
    */
-  constructor(renderer, store) {
+  constructor(ui, textEngine, store) {
     /**
-     * @type {Renderer}
+     * @type {UiEngine}
      */
-    this.renderer = renderer;
+    this.ui = ui;
+    /**
+     * @type {TextEngine}
+     */
+    this.textEngine = textEngine;
     /**
      * @type {Store}
      */
     this.store = store;
     /**
-     *
      * @type {List<Scene>|null}
      */
     this.checkpoint = null;
+    /**
+     * @type {boolean}
+     */
+    this.resume = false;
+    /**
+     * @type {boolean}
+     */
+    this.waitingForPassage = false;
   }
 
   init() {
     this.store.subscribe(this.update.bind(this));
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
+
+    this.textEngine.init();
   }
 
   /**
@@ -67,51 +91,29 @@ export default class Engine {
     this.store.dispatch(loadScenes(this.checkpoint));
   }
 
-  update() {
+  async update() {
     const scenes = this.store.getState().get("scenes");
+    const scene = getActiveScene(scenes);
+    const passage = getNextPassage(scene.passages);
     const choice = getActiveChoice(scenes);
 
     if (choice !== null) {
-      this.renderer.printChoice(choice);
+      await this.textEngine.processChoice(scene.choice);
       return;
     }
 
-    const passage = getActivePassage(scenes);
+    if (this.waitingForPassage) {
+      return;
+    }
 
     if (passage === null) {
-      this.next();
+      this.store.dispatch(presentChoice(scene));
       return;
     }
 
-    this.renderer.printPassage(passage);
-    this.next();
-  }
-
-  next() {
-    const scenes = this.store.getState().get("scenes");
-    const activeScene = getNextScene(scenes);
-    const activePassage = getActivePassage(scenes);
-
-    if (isPassagesComplete(activeScene.passages)) {
-      if (isChoiceActive(activeScene)) {
-        return;
-      }
-
-      this.store.dispatch(presentChoice(activeScene));
-      return;
-    }
-
-    if (isSceneComplete(activeScene)) {
-      this.store.dispatch(completeScene(activeScene));
-      return;
-    }
-
-    if (activePassage === null || activePassage.isComplete) {
-      this.store.dispatch(nextPassage(activeScene));
-      return;
-    }
-
-    this.store.dispatch(completePassage(activeScene, activePassage));
+    this.textEngine.clearChoice();
+    await this.textEngine.processText(passage.text);
+    this.waitingForPassage = true;
   }
 
   selectOption() {
@@ -125,7 +127,7 @@ export default class Engine {
     this.store.dispatch(selectChoiceOption(choice));
   }
 
-  focusOption(optionIndex) {
+  focusOption(optionIndex = 0) {
     const scenes = this.store.getState().get("scenes");
     const choice = getActiveChoice(scenes);
 
@@ -136,16 +138,22 @@ export default class Engine {
 
   handleKeyDown(event) {
     const scenes = this.store.getState().get("scenes");
+    const activeScene = getActiveScene(scenes);
     const choice = getActiveChoice(scenes);
 
-    if (this.renderer.drawing || choice === null) {
-      return;
-    }
-
     switch (event.code) {
-      case KEY_ENTER:
+      case KEY_ENTER: {
+        if (this.waitingForPassage) {
+          this.waitingForPassage = false;
+          this.store.dispatch(
+            completePassage(activeScene, getActivePassage(scenes))
+          );
+          return;
+        }
+
         this.selectOption();
         return;
+      }
       case KEY_DOWN: {
         const focusedOption = getFocusedOption(choice);
         const optionIndex = choice.options.findIndex(o => focusedOption === o);
@@ -159,5 +167,9 @@ export default class Engine {
         return;
       }
     }
+  }
+
+  static getUnit(u) {
+    return u * BASE_UNIT;
   }
 }

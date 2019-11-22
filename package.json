@@ -23,10 +23,14 @@
   },
   "dependencies": {
     "immutable": "^4.0.0-rc.12",
+    "pixi.js": "^5.2.0",
     "redux": "^4.0.4",
     "redux-batched-actions": "^0.4.1"
   },
   "transform": {
     "^.+\\.js?$": "babel-jest"
-  }
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
 }

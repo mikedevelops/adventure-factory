@@ -10,7 +10,7 @@
 /**
  * @param {string} id
  * @param {number} order
- * @param {PassageText} text
+ * @param {EngineText} text
  * @param {string} location
  * @param {boolean} isFocused
  * @return {ChoiceOption}

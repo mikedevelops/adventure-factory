@@ -70,3 +70,6 @@ export const loadScenes = scenes => ({
   type: LOAD_SCENES,
   scenes
 });
+
+export const INPUT = "INPUT";
+export const input = () => ({ type: INPUT });

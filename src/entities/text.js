@@ -1,11 +1,11 @@
 /**
- * @typedef {Object} PassageText
+ * @typedef {Object} EngineText
  * @property {string} content
  */
 
 /**
  * @param {string} content
- * @return {PassageText}
+ * @return {EngineText}
  */
 export const createText = content => ({
   content

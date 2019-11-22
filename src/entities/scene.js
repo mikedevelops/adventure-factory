@@ -5,7 +5,8 @@ import {
   getNextPassage,
   setPassagesInComplete
 } from "./passage";
-import { setChoiceComplete } from "./choice";
+import { setChoiceComplete, setOptionFocused } from "./choice";
+import { focusChoiceOption } from "../state/actions";
 
 /**
  * @typedef {Object} Scene
@@ -94,7 +95,12 @@ export const activateScene = (scenes, scene) => {
         scene.passages,
         getNextPassage(scene.passages)
       );
-      return Object.assign({}, scene, { isActive: true, passages });
+      const choice = setOptionFocused(s.choice);
+      return Object.assign({}, scene, {
+        isActive: true,
+        passages,
+        choice
+      });
     }
 
     return deactivateScene(s);
@@ -178,6 +184,14 @@ export const setSceneIncomplete = scene => {
  */
 export const updateChoice = (scene, choice) => {
   return Object.assign({}, scene, { choice });
+};
+
+/**
+ * @param {Scene} scene
+ * @return {boolean}
+ */
+export const isPassageNext = scene => {
+  return getNextPassage(scene.passages) !== null;
 };
 
 /**

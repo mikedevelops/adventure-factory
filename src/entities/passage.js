@@ -4,13 +4,13 @@
  * @property {number} order
  * @property {boolean} isComplete
  * @property {boolean} isActive
- * @property {PassageText} text
+ * @property {EngineText} text
  */
 
 /**
  * @param {string} id
  * @param {number} order
- * @param {PassageText} text
+ * @param {EngineText} text
  * @param {boolean} isComplete
  * @param {boolean} isActive
  * @return {Passage}
@@ -30,18 +30,15 @@ export const createPassage = (
 });
 
 /**
+ * Get the next incomplete passage
+ *
  * @param {List<Passage>} passages
  * @return {Passage|null}
  */
 export const getNextPassage = passages => {
   const sortedPassages = sortByPassageOrder(passages);
   const next = sortedPassages.find(p => p.isComplete === false);
-
-  if (next === undefined) {
-    return null;
-  }
-
-  return next;
+  return next !== undefined ? next : null;
 };
 
 /**
@@ -101,6 +98,10 @@ export const setPassageComplete = (passages, passage) => {
   return passages.map(p => {
     if (p.id === passage.id) {
       return Object.assign({}, passage, { isComplete: true, isActive: false });
+    }
+
+    if (p.order === passage.order + 1) {
+      return Object.assign({}, p, { isActive: true });
     }
 
     return p;

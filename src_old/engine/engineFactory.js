@@ -5,6 +5,7 @@ import TextEngine from "../text/TextEngine";
 import Animator from "../animation/Animator";
 import UiEngine from "../ui/UiEngine";
 import { Application } from "pixi.js";
+import StateMachine from "../state/StateMachine";
 
 /**
  * @return {Engine}
@@ -20,7 +21,8 @@ export const createEngine = root => {
   const text = new TextEngine(renderer);
   const animator = new Animator();
   const ui = new UiEngine(animator, renderer);
-  const engine = new Engine(ui, text, store);
+  const stateMachine = new StateMachine();
+  const engine = new Engine(ui, text, store, stateMachine);
 
   return engine;
 };

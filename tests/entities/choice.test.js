@@ -1,8 +1,8 @@
-import { createOption } from "../../src/entities/option";
-import { createText } from "../../src/entities/text";
-import { activateChoice, createChoice } from "../../src/entities/choice";
+import { createOption } from "../../src_old/entities/option";
+import { createText } from "../../src_old/entities/text";
+import { activateChoice, createChoice } from "../../src_old/entities/choice";
 import { List } from "immutable";
-import { createScene } from "../../src/entities/scene";
+import { createScene } from "../../src_old/entities/scene";
 
 describe("Choice", () => {
   describe("activateChoice()", () => {

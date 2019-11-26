@@ -1,4 +1,4 @@
-import Engine from "../../src/engine/Engine";
+import Engine from "../../src_old/engine/Engine";
 
 describe("Engine", () => {
   let engine;

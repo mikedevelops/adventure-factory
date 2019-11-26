@@ -5,6 +5,7 @@ import { createText } from "./entities/text";
 import { createChoice } from "./entities/choice";
 import { createOption } from "./entities/option";
 import { engine } from "./index";
+import StateMachine from "./state/StateMachine";
 
 const state = Map({
   scenes: List([

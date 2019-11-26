@@ -7,11 +7,11 @@ import {
   setSceneComplete,
   updatePassages,
   updateScene
-} from "../../src/entities/scene";
+} from "../../src_old/entities/scene";
 import { List, Map } from "immutable";
-import { createPassage } from "../../src/entities/passage";
-import { createText } from "../../src/entities/text";
-import { createChoice } from "../../src/entities/choice";
+import { createPassage } from "../../src_old/entities/passage";
+import { createText } from "../../src_old/entities/text";
+import { createChoice } from "../../src_old/entities/choice";
 
 describe("Scenes", () => {
   describe("activateScene()", () => {

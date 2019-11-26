@@ -1,10 +1,10 @@
-import { ENGINE_START, startEngine } from "../../src/state/actions";
-import { createScene } from "../../src/entities/scene";
+import { ENGINE_START, startEngine } from "../../src_old/state/actions";
+import { createScene } from "../../src_old/entities/scene";
 import { List, Map } from "immutable";
-import reducer from "../../src/state/reducer";
-import { createPassage } from "../../src/entities/passage";
-import { createText } from "../../src/entities/text";
-import { createChoice } from "../../src/entities/choice";
+import reducer from "../../src_old/state/reducer";
+import { createPassage } from "../../src_old/entities/passage";
+import { createText } from "../../src_old/entities/text";
+import { createChoice } from "../../src_old/entities/choice";
 
 describe("Reducer", () => {
   describe(ENGINE_START, () => {

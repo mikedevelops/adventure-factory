@@ -26,6 +26,7 @@ import { activateChoice, getFocusedOption } from "../entities/choice";
 import { createStore } from "redux";
 import reducer from "../state/reducer";
 import { List, Map } from "immutable";
+import IdleState from "../state/IdleState";
 
 const KEY_ENTER = "Enter";
 const KEY_DOWN = "ArrowDown";
@@ -40,8 +41,9 @@ export default class Engine {
    * @param {UiEngine} ui
    * @param {TextEngine} textEngine
    * @param {Store} store
+   * @param {StateMachine} stateMachine
    */
-  constructor(ui, textEngine, store) {
+  constructor(ui, textEngine, store, stateMachine) {
     /**
      * @type {UiEngine}
      */
@@ -55,24 +57,17 @@ export default class Engine {
      */
     this.store = store;
     /**
-     * @type {List<Scene>|null}
+     * @type {StateMachine}
      */
-    this.checkpoint = null;
-    /**
-     * @type {boolean}
-     */
-    this.resume = false;
-    /**
-     * @type {boolean}
-     */
-    this.waitingForPassage = false;
+    this.stateMachine = stateMachine;
   }
 
   init() {
     this.store.subscribe(this.update.bind(this));
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
-
     this.textEngine.init();
+
+    this.stateMachine.setState(new IdleState());
   }
 
   /**

@@ -1,8 +1,8 @@
-import { startEngine } from "../../src/state/actions";
-import { createScene } from "../../src/entities/scene";
-import reducer from "../../src/state/reducer";
+import { startEngine } from "../../src_old/state/actions";
+import { createScene } from "../../src_old/entities/scene";
+import reducer from "../../src_old/state/reducer";
 import { List, Map } from "immutable";
-import { activateScene } from "../../src/entities/scene";
+import { activateScene } from "../../src_old/entities/scene";
 
 jest.mock("../../src/entities/scene");
 

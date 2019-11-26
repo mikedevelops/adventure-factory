@@ -7,11 +7,11 @@ import {
   getNextPassage,
   sortByPassageOrder,
   isPassagesComplete
-} from "../../src/entities/passage";
+} from "../../src_old/entities/passage";
 import { List } from "immutable";
-import { createText } from "../../src/entities/text";
-import { createScene } from "../../src/entities/scene";
-import { createChoice } from "../../src/entities/choice";
+import { createText } from "../../src_old/entities/text";
+import { createScene } from "../../src_old/entities/scene";
+import { createChoice } from "../../src_old/entities/choice";
 
 describe("Passages", () => {
   describe("sortByPassageOrder()", () => {

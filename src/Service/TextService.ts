@@ -34,8 +34,13 @@ export class TextService {
     this.passageView.hide();
   }
 
+  public clearChoice(): void {
+    this.choiceView.hide();
+  }
+
   async printChoice(choice: Choice): Promise<void> {
     this.clearPassage();
+    this.choiceView.show();
 
     await this.type(choice.getText(), this.choiceView.getText());
 
@@ -76,6 +81,11 @@ export class TextService {
 
   public skipTyping(): void {
     this.skip = true;
+  }
+
+  public clear(): void {
+    this.clearPassage();
+    this.clearChoice();
   }
 
   private draw(speed: Speed): Promise<void> {

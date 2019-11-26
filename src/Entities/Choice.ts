@@ -53,4 +53,10 @@ export class Choice {
 
     return focused;
   }
+
+  public getFocusedLocation(): string {
+    const option = this.getFocusedOption();
+
+    return option.getLocation();
+  }
 }

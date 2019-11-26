@@ -10,11 +10,13 @@ import { isStateWithInput } from "../State/StateWithInput";
 
 export class Runtime {
   private scenes: Scene[] = [];
+
   constructor(private stateManager: StateManager) {}
 
   public init(): void {
     window.addEventListener("keydown", this.handleInput.bind(this));
 
+    this.stateManager.setRuntime(this);
     this.update();
   }
 
@@ -61,5 +63,15 @@ export class Runtime {
     if (state !== null && isStateWithInput(state)) {
       state.handleInput(input);
     }
+  }
+
+  public getSceneById(id: string): Scene {
+    const scene = this.scenes.find(s => s.getId() === id);
+
+    if (scene === undefined) {
+      throw new Error(`No Scene found with ID ${id}`);
+    }
+
+    return scene;
   }
 }

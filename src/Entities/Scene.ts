@@ -1,9 +1,11 @@
 import { Passage } from "./Passage";
 import { Choice } from "./Choice";
+import uuid from "uuid/v4";
 
 export class Scene {
   private active = false;
   private complete = false;
+  private id: string = uuid();
 
   constructor(
     private name: string,
@@ -31,5 +33,9 @@ export class Scene {
 
   public isComplete(): boolean {
     return this.complete;
+  }
+
+  public getId(): string {
+    return this.id;
   }
 }

@@ -4,7 +4,7 @@ import { I_DOWN, I_NEXT, I_UP, Input } from "../../Input/Input";
 import { Choice } from "../../Entities/Choice";
 import { Option } from "../../Entities/Option";
 import { FocusingOptionState } from "../Entities/FocusingOptionState";
-import { SelectedOptionState } from "../Entities/SelectedOptionState";
+import { LocationChangeState } from "../Entities/LocationChangeState";
 
 export const S_WAITING_FOR_SELECTION = "S_WAITING_FOR_SELECTION";
 
@@ -36,7 +36,7 @@ export class WaitingForUserSelectionState implements State, StateWithInput {
 
   update(): State | null {
     if (this.selected) {
-      return new SelectedOptionState(this.choice);
+      return new LocationChangeState(this.choice);
     }
 
     if (this.focused !== null) {

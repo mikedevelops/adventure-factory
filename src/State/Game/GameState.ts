@@ -6,4 +6,8 @@ export class GameState {
   public getScenes(): Scene[] {
     return this.scenes;
   }
+
+  public addScene(scene: Scene): void {
+    this.scenes.push(scene);
+  }
 }

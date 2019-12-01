@@ -8,10 +8,18 @@ export class Scene {
   private id: string = uuid();
 
   constructor(
-    private name: string,
+    private name: string = "",
     private passages: Passage[] = [],
-    private choice: Choice
+    private choice: Choice = new Choice()
   ) {}
+
+  public setName(name: string): void {
+    this.name = name;
+  }
+
+  public setId(id: string): void {
+    this.id = id;
+  }
 
   public isActive(): boolean {
     return this.active;
@@ -31,11 +39,19 @@ export class Scene {
     return this.choice;
   }
 
+  public setChoice(choice: Choice): void {
+    this.choice = choice;
+  }
+
   public isComplete(): boolean {
     return this.complete;
   }
 
   public getId(): string {
     return this.id;
+  }
+
+  public addPassage(passage: Passage): void {
+    this.passages.push(passage);
   }
 }

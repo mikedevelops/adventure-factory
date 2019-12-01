@@ -1,7 +1,6 @@
 import { View } from "./View";
 import * as PIXI from "pixi.js";
 import { TextStyle } from "./TextStyle";
-import { Choice } from "../Entities/Choice";
 import { UnitService } from "../Service/UnitService";
 import { Option } from "../Entities/Option";
 
@@ -34,53 +33,34 @@ export class ChoiceView implements View {
     this.renderer.stage.addChild(this.container);
   }
 
-  public getText(): PIXI.Text {
-    return this.label;
+  public updateLabel(text: string): void {
+    this.label.text = text;
   }
 
-  public createOptions(choice: Choice): void {
-    this.options = [];
+  public async drawOption(option: Option): Promise<void> {
+    const optionText = new PIXI.Text(option.getText().getContent());
+    const order = option.getOrder();
 
-    for (let i = 0; i < choice.getOptions().length; i++) {
-      const option = choice.getOptions()[i];
-      const opt = new PIXI.Text("", TextStyle(this.renderer.view.width));
+    optionText.y += this.label.height + UnitService.getUnit(1) * order;
+    optionText.y += order === 0 ? 0 : UnitService.getUnit(1);
+    optionText.x += UnitService.getUnit(2);
 
-      // margin
-      opt.y += this.label.height + UnitService.getUnit(1) * i;
-      opt.y += i === 0 ? 0 : UnitService.getUnit(1);
-      opt.x += UnitService.getUnit(2);
-
-      this.options.push(opt);
-      this.optionContainer.addChild(opt);
-
-      if (option.isFocused()) {
-        this.positionFocusIndicator(opt);
-      }
-    }
+    this.options.push(optionText);
+    this.optionContainer.addChild(optionText);
   }
 
   public async focusOption(option: Option): Promise<void> {
-    const opt = this.options.find(
-      o => o.text === option.getText().getContent()
-    );
+    const optionText = this.options[option.getOrder()];
 
-    if (opt === undefined) {
-      throw new Error(`Cannot find option in view ${option}`);
-    }
-
-    this.positionFocusIndicator(opt);
-  }
-
-  public getOptionView(index: number): PIXI.Text {
-    if (this.options[index] === undefined) {
-      throw new Error("Cannot find option: " + index);
-    }
-
-    return this.options[index];
+    this.showFocusIndicator();
+    this.focusIndicator.y = optionText.y + this.focusIndicator.height * 1.5;
+    this.focusIndicator.x = optionText.x - UnitService.getUnit(1.5);
   }
 
   public hide(): void {
     this.container.alpha = 0;
+    this.optionContainer.removeChildren();
+    this.options = [];
   }
 
   public show(): void {
@@ -89,10 +69,5 @@ export class ChoiceView implements View {
 
   public showFocusIndicator(): void {
     this.focusIndicator.alpha = 1;
-  }
-
-  private positionFocusIndicator(opt: PIXI.Text): void {
-    this.focusIndicator.x = opt.x - UnitService.getUnit(1.5);
-    this.focusIndicator.y = opt.y + this.focusIndicator.height * 1.5;
   }
 }

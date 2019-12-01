@@ -2,14 +2,25 @@ import { Text } from "./Text";
 import { Option } from "./Option";
 
 export class Choice {
-  constructor(private text: Text, private options: Option[]) {}
+  constructor(
+    private text: Text = new Text(),
+    private options: Option[] = []
+  ) {}
 
   public getText(): Text {
     return this.text;
   }
 
+  public setText(text: Text): void {
+    this.text = text;
+  }
+
   public getOptions(): Option[] {
     return this.options;
+  }
+
+  public addOption(option: Option): void {
+    this.options.push(option);
   }
 
   public focusOption(offset: number): Option {

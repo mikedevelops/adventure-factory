@@ -13,8 +13,8 @@ export class PassageView implements View {
     this.renderer.stage.addChild(this.container);
   }
 
-  public getText(): PIXI.Text {
-    return this.text;
+  public updateText(text: string): void {
+    this.text.text = text;
   }
 
   public show(): void {
@@ -23,5 +23,6 @@ export class PassageView implements View {
 
   public hide(): void {
     this.container.alpha = 0;
+    this.text.text = "";
   }
 }

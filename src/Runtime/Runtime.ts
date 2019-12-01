@@ -2,16 +2,19 @@ import { StateManager } from "../Manager/StateManager";
 import { Scene } from "../Entities/Scene";
 import { GameState } from "../State/Game/GameState";
 import { LoadingState } from "../State/Runtime/LoadingState";
-import { LoadedState } from "../State/Runtime/LoadedState";
 import { NoScenesLoadedErrorState } from "../State/Error/NoScenesLoadedErrorState";
 import { DelegatingSceneActionState } from "../State/Runtime/DelegatingSceneActionState";
 import { I_DOWN, I_NEXT, I_UP, Input } from "../Input/Input";
 import { isStateWithInput } from "../State/StateWithInput";
+import { LoadGameStateManager } from "../Manager/LoadGameStateManager";
 
 export class Runtime {
-  private scenes: Scene[] = [];
+  private state: GameState = new GameState();
 
-  constructor(private stateManager: StateManager) {}
+  constructor(
+    private stateManager: StateManager,
+    private loadGameStateManager: LoadGameStateManager
+  ) {}
 
   public init(): void {
     window.addEventListener("keydown", this.handleInput.bind(this));
@@ -20,14 +23,18 @@ export class Runtime {
     this.update();
   }
 
-  public load(state: GameState): void {
-    this.stateManager.setState(new LoadingState());
-    this.scenes = state.getScenes();
-    this.stateManager.setState(new LoadedState());
+  public load(state: string): void {
+    this.stateManager.setState(
+      new LoadingState(this.loadGameStateManager, state)
+    );
+  }
+
+  public setState(state: GameState): void {
+    this.state = state;
   }
 
   public start(): void {
-    const scene = this.scenes.find(scene => !scene.isComplete());
+    const scene = this.state.getScenes().find(scene => !scene.isComplete());
 
     if (scene === undefined) {
       this.stateManager.setState(new NoScenesLoadedErrorState());
@@ -66,7 +73,7 @@ export class Runtime {
   }
 
   public getSceneById(id: string): Scene {
-    const scene = this.scenes.find(s => s.getId() === id);
+    const scene = this.state.getScenes().find(s => s.getId() === id);
 
     if (scene === undefined) {
       throw new Error(`No Scene found with ID ${id}`);

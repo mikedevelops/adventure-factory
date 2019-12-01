@@ -25,16 +25,17 @@ export class StateManager {
   public setState(state: State): void {
     console.log("Setting state: ", state.getName());
 
-    if (isStateWithEnter(state)) {
-      state.enter();
-    }
-
+    // ensure we set runtime at earliest opportunity
     if (isStateWithRuntime(state)) {
       if (this.runtime === null) {
         throw new Error("No runtime set in StateManager");
       }
 
       state.injectRuntime(this.runtime);
+    }
+
+    if (isStateWithEnter(state)) {
+      state.enter();
     }
 
     if (this.state !== null && isStateWithLeave(this.state)) {

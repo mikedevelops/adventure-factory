@@ -6,6 +6,8 @@ import { TextService } from "../../Service/TextService";
 import { Choice } from "../../Entities/Choice";
 import { Scene } from "../../Entities/Scene";
 import { WaitingForUserSelectionState } from "../Interaction/WaitingForUserSelectionState";
+import { ChoiceController } from "../../Controller/ChoiceController";
+import { PassageController } from "../../Controller/PassageController";
 
 export const S_PRINTING_CHOICE = "S_PRINTING_CHOICE";
 
@@ -16,7 +18,8 @@ export class PrintingChoiceState
   constructor(private scene: Scene, private choice: Choice) {}
 
   enter(): void {
-    TextService.instance.printChoice(this.choice).then(() => {
+    PassageController.instance.clear();
+    ChoiceController.instance.print(this.choice).then(() => {
       this.printed = true;
     });
   }
@@ -30,7 +33,7 @@ export class PrintingChoiceState
       return;
     }
 
-    TextService.instance.skipTyping();
+    ChoiceController.instance.skip();
   }
 
   update(): State | null {

@@ -1,11 +1,11 @@
 import { State } from "../State";
 import { Passage } from "../../Entities/Passage";
 import { StateWithEnter } from "../StateWithEnter";
-import { TextService } from "../../Service/TextService";
 import { Scene } from "../../Entities/Scene";
 import { WaitingForUserInputState } from "../Interaction/WaitingForUserInputState";
 import { I_NEXT, Input } from "../../Input/Input";
 import { StateWithInput } from "../StateWithInput";
+import { PassageController } from "../../Controller/PassageController";
 
 export const S_PRINTING_PASSAGE = "S_PRINTING_PASSAGE";
 
@@ -30,7 +30,7 @@ export class PrintingPassageState
   }
 
   enter(): void {
-    TextService.instance.printPassage(this.passage).then(() => {
+    PassageController.instance.print(this.passage).then(() => {
       this.printed = true;
     });
   }
@@ -40,6 +40,6 @@ export class PrintingPassageState
       return;
     }
 
-    TextService.instance.skipTyping();
+    PassageController.instance.skip();
   }
 }

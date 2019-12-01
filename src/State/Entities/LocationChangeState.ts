@@ -6,6 +6,7 @@ import { Runtime } from "../../Runtime/Runtime";
 import { DelegatingSceneActionState } from "../Runtime/DelegatingSceneActionState";
 import { StateWithEnter } from "../StateWithEnter";
 import { TextService } from "../../Service/TextService";
+import { ChoiceController } from "../../Controller/ChoiceController";
 
 export const S_LOCATION_CHANGE = "S_LOCATION_CHANGE";
 
@@ -36,7 +37,7 @@ export class LocationChangeState
     console.log(this.runtime.getSceneById(this.choice.getFocusedLocation()));
   }
 
-  private getRuntime(): Runtime {
+  getRuntime(): Runtime {
     if (this.runtime === null) {
       throw new Error("Attempted to get runtime before it was injected");
     }
@@ -45,6 +46,6 @@ export class LocationChangeState
   }
 
   enter(): void {
-    TextService.instance.clear();
+    ChoiceController.instance.clear();
   }
 }

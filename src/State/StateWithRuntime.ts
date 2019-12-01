@@ -6,4 +6,5 @@ export const isStateWithRuntime = (state: State): state is StateWithRuntime =>
 
 export interface StateWithRuntime extends State {
   injectRuntime(runtime: Runtime): void;
+  getRuntime(): Runtime;
 }

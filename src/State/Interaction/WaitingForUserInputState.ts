@@ -6,6 +6,7 @@ import { Scene } from "../../Entities/Scene";
 import { StateWithEnter } from "../StateWithEnter";
 import { UiService } from "../../Service/UiService";
 import { StateWithLeave } from "../StateWithLeave";
+import { UiController } from "../../Controller/UiController";
 
 export const S_WAITING_FOR_USER_INPUT = "S_WAITING_FOR_USER_INPUT";
 
@@ -36,10 +37,10 @@ export class WaitingForUserInputState
   }
 
   enter(): void {
-    UiService.instance.startWaitingForInput();
+    UiController.instance.startWaitingForInput();
   }
 
   leave(): void {
-    UiService.instance.clearWaitingForInput();
+    UiController.instance.stopWaitingForInput();
   }
 }
